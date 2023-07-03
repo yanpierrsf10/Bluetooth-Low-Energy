@@ -1,3 +1,5 @@
+//This code detects the nearest BLE of an ESP32-LilyGO-T-ETH-POE and sends it to a database through MQTT using an Ethernet connection.
+
 #include <Wire.h>
 #include <WiFi.h>
 #include <PubSubClient.h>

@@ -1,23 +1,15 @@
+//This code detects the nearest BLE of an ESP32-LilyGO-T-ETH-POE.
+
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <math.h>
 #include <map>
-#include <PubSubClient.h>
-#include <WiFi.h>
 #include <Wire.h>
 
 #define MEASURED_POWER -79  // Potencia de señal medida a 1 metro (en dBm)
 #define N 2.5               // Factor de atenuación
 #define SCAN_INTERVAL_MS 5000 // Intervalo de tiempo para realizar otro escaneo (en milisegundos)
-#define WIFI_SSID  "ACME0"//  Cambiar por el nombre de tu red Wi-Fi
-#define WIFI_PASSWORD  "Electronic2016!"//  Cambiar por la contraseña de tu red Wi-Fi
-#define MQTT_SERVER  "192.168.88.167"//  Cambiar por la dirección IP de la Raspberry Pi
-#define MQTT_PORT 1883
-#define MQTT_TOPIC "datos/frontal_derecho"
-
-WiFiClient wifiClient;
-PubSubClient mqttClient(wifiClient);
 
 BLEScan* pBLEScan;
 BLEScanResults foundDevices;
@@ -43,25 +35,6 @@ void setup() {
   pBLEScan->setActiveScan(true);
   pBLEScan->setInterval(100);
   pBLEScan->setWindow(99);
-
-// Conexión a Wi-Fi
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Conectando a Wi-Fi...");
-  }
-  Serial.println("Conectado a Wi-Fi");
-
-  // Conexión a MQTT
-  mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
-  while (!mqttClient.connected()) {
-    if (mqttClient.connect("ESP32-BNO055-1")) {
-      Serial.println("Conectado a MQTT");
-    } else {
-      Serial.println("Error al conectar a MQTT");
-      delay(1000);
-    }
-  }
 
 }
 
@@ -137,13 +110,7 @@ void BLEcercano(){
           closestBLE = mostCommonName.c_str();
           Serial.print("Llanta promedio: ");
           Serial.println(closestBLE);
-          mqttClient.connect("ESP32-BNO055-1");
-          char message[100];
-          sprintf(message,closestBLE);
-          Serial.println("Sending...");
-          mqttClient.publish(MQTT_TOPIC, message);
           deviceNames.clear(); // Borrar el mapa para comenzar a contar los nombres en los próximos 10 escaneos  
-          
           counter=0;        
         }
     counter++;
