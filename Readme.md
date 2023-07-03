@@ -8,3 +8,5 @@ https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32
 Then, go to Manage Libraries section and install the ESP32 library.
 
 PubSubClient and WiFi libaries are also needed. 
+
+**Board**: AI Thinker ESP32-CAM
